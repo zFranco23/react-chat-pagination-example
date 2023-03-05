@@ -1,0 +1,11 @@
+
+
+div.chatContainer {
+    border: 2px solid #323232;
+    border-radius: 10px;
+    width: 320px;
+    height: 500px;
+
+    padding: 16px;
+}
+
