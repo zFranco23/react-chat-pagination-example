@@ -2,5 +2,6 @@
 
 export type Message = { 
     id : string
-    message: string
+    message: string,
+    uid: number
 }

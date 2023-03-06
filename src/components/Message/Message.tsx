@@ -5,7 +5,8 @@ import type { Message as MessageType } from '../../types'
 import style from './style.module.css';
 
 type Props = {
-    message: MessageType
+    message: MessageType,
+    idx: number
 }
 
 
@@ -18,12 +19,13 @@ const Message: FC<Props> = (props) => {
     let mssgElem;
 
     if(self){
-        mssgElem =  <div className={`${style.mssgContainer} ${style.rightContainer}`}>
-            <p>{message.message}</p>
+        mssgElem =  <div id={message.uid.toString()} className={`${style.mssgContainer} ${style.rightContainer}`}>
+            {/* <p>{message.message}</p> */}
+            <p>Message {message.uid}</p>
         </div>
     }else {
-        mssgElem = <div className={`${style.mssgContainer} ${style.leftContainer}`}>
-            <p>{message.message}</p>
+        mssgElem = <div id={message.uid.toString()} className={`${style.mssgContainer} ${style.leftContainer}`}>
+            <p>Message {message.uid}</p>
         </div>
     }
 

@@ -1,37 +1,37 @@
 
 import { FC, useCallback, useEffect, useRef, useState } from "react"
 import { getMessages } from "../../helpers";
-import Message from "../Message/Message";
+import { usePrevious } from "../../utils";
 
+import { Message as MessageType } from "../../types";
+
+import Message from "../Message/Message";
 type Props = {}
 
 import style from './style.module.css';
 
 const ChatContainer: FC<Props> = (props) => {
 
-  const messageListRef = useRef<HTMLDivElement | null>(null)
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const messageListContentRef = useRef<HTMLDivElement | null>(null)
   const hiddenDivRef = useRef<HTMLDivElement | null>(null)
-  const loaderRef = useRef<HTMLDivElement | null>(null)
-  const [showObserver,setShowObserver] = useState<boolean>(true);
   const [page,setPage] = useState<number>(0); 
   const [isLoading,setIsLoading] = useState<boolean>(false);
   const [messages,setMessages]= useState<Array<any>>([]) 
+  const [scrollHeight,setScrollHeight]= useState<number | typeof undefined>();
+  const prevMessages = usePrevious<MessageType[]>(messages);
+  
+  const prevScrollHeight = usePrevious(scrollHeight);
 
-
+  
   const fetchMessages = useCallback(async ()=>{
-    console.log(page);
-    setShowObserver(false);
     setIsLoading(true)
     const data = await getMessages(page);    
-    if(messageListRef.current){
-        console.log( messageListRef.current.firstChild);
-        ;
-        const elem = messageListRef.current;
-        console.log(messageListRef.current.offsetTop);
-        
-        elem.scrollTop = 100
+    if(chatContainerRef.current){
+        setScrollHeight(chatContainerRef.current.scrollHeight);
     }
-    setShowObserver(true);
     setMessages(ps => [...data,...ps])
     setIsLoading(false);
   },[page])
@@ -40,18 +40,24 @@ const ChatContainer: FC<Props> = (props) => {
     fetchMessages();
   },[fetchMessages])
 
+  useEffect(()=>{
+    if(messages.length && prevMessages && prevMessages.length > 0){
+      if(prevScrollHeight && scrollHeight &&  prevScrollHeight !== scrollHeight){        
+        const elem = chatContainerRef.current;
+        if(elem) elem.scrollTop = scrollHeight - prevScrollHeight - 20
+      }
+    }
+  },[messages])
+
 
   useEffect(()=>{
-    if(messages.length && page === 0){
-        const elem = messageListRef.current;
-
+    if(messages.length && page === 0){      
+        const elem = chatContainerRef.current;
         if(elem){
             elem.scrollTop = elem.scrollHeight
         }
     }
   },[messages, page])
-
-
 
   const observerCallback = useCallback((observerEntries: any) => {
     if (observerEntries[0].isIntersecting) {
@@ -72,7 +78,6 @@ const ChatContainer: FC<Props> = (props) => {
             observer.observe(hiddenDivRef.current)
         }
     
-    
         return () => {
             if(hiddenDivRef.current){
                 observer.unobserve(hiddenDivRef.current);
@@ -81,15 +86,15 @@ const ChatContainer: FC<Props> = (props) => {
   },[observerCallback])
 
   return (
-    <div className={style.chatContainer} id="scrollArea">
-
-        
-        <div className={style.messagesList} ref={messageListRef}>
-        {isLoading && <div>...loading </div>}
-            {showObserver && <div ref={hiddenDivRef}></div>}
+    <div id="chatContainer" className={style.chatContainer}ref={chatContainerRef}>
+        <div className={style.messagesList} ref={messageListContentRef}>
+            {isLoading && <div>...loading </div>}
+            <div ref={hiddenDivRef}></div>
+            <div style={{display:'flex',flexDirection:'column',gap:'16px'}} ref={listRef}>
             {messages.map((m, idx: number)=> (
-                <Message key={`message-${idx}`} message={m} />
+                <Message key={`message-${idx}`} message={m} idx={idx} />
             ))}
+            </div>
         </div>
 
     </div>
