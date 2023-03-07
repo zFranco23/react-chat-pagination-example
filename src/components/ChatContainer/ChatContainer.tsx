@@ -8,16 +8,13 @@ import Message from '../Message/Message';
 
 import style from './style.module.css';
 
-type Props = {
-  show?: boolean;
-};
-
-const ChatContainer: FC<Props> = (props) => {
+const ChatContainer: FC = (props) => {
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const messageListContentRef = useRef<HTMLDivElement | null>(null);
   const hiddenDivRef = useRef<HTMLDivElement | null>(null);
+
   const [page, setPage] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Array<MessageType>>([]);
