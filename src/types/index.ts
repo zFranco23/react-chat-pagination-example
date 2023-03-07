@@ -1,7 +1,5 @@
-
-
-export type Message = { 
-    id : string
-    message: string,
-    uid: number
-}
+export type Message = {
+  id: string;
+  message: string;
+  uid: number;
+};

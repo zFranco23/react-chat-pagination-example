@@ -1,35 +1,43 @@
-
-import type { FC } from 'react'
-import type { Message as MessageType } from '../../types'
+import type { FC } from 'react';
+import type { Message as MessageType } from '../../types';
 
 import style from './style.module.css';
 
 type Props = {
-    message: MessageType,
-    idx: number
-}
-
+  message: MessageType;
+  idx: number;
+};
 
 const Message: FC<Props> = (props) => {
-    const currId = '123' // 'I'm the trasmitter
-    const {message} = props;
+  const currId = '123'; // 'I'm the trasmitter
+  const { message } = props;
 
-    const self = message.id === currId;
-    
-    let mssgElem;
+  const self = message.id === currId;
 
-    if(self){
-        mssgElem =  <div id={message.uid.toString()} className={`${style.mssgContainer} ${style.rightContainer}`}>
-            {/* <p>{message.message}</p> */}
-            <p>Message {message.uid}</p>
-        </div>
-    }else {
-        mssgElem = <div id={message.uid.toString()} className={`${style.mssgContainer} ${style.leftContainer}`}>
-            <p>Message {message.uid}</p>
-        </div>
-    }
+  let mssgElem;
 
-    return mssgElem;
-}
+  if (self) {
+    mssgElem = (
+      <div
+        id={message.uid.toString()}
+        className={`${style.mssgContainer} ${style.rightContainer}`}
+      >
+        {/* <p>{message.message}</p> */}
+        <p>Message {message.uid}</p>
+      </div>
+    );
+  } else {
+    mssgElem = (
+      <div
+        id={message.uid.toString()}
+        className={`${style.mssgContainer} ${style.leftContainer}`}
+      >
+        <p>Message {message.uid}</p>
+      </div>
+    );
+  }
 
-export default Message
+  return mssgElem;
+};
+
+export default Message;
